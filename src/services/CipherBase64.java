@@ -1,3 +1,5 @@
+package services;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -12,27 +14,26 @@ public class CipherBase64 {
     private SecretKeyFactory secretKeyFactory;
     private Cipher cipher;
     public byte[] arrayBytes;
-    private String encryptionKey;
     private String encryptionScheme;
     public SecretKey secretKey;
 
     public CipherBase64() throws Exception {
-        encryptionKey = "StreamFitCriptogra123456";
-        encryptionScheme = DESEDE_ENCRYPTION_SCHEME;
-        arrayBytes = encryptionKey.getBytes(UNICODE_FORMAT);
-        keySpec = new DESedeKeySpec(arrayBytes);
-        secretKeyFactory = SecretKeyFactory.getInstance(encryptionScheme);
-        cipher = Cipher.getInstance(encryptionScheme);
-        secretKey = secretKeyFactory.generateSecret(keySpec);
+        String encryptionKey = "StreamFitCriptogra123456";
+        this.encryptionScheme = DESEDE_ENCRYPTION_SCHEME;
+        this.arrayBytes = encryptionKey.getBytes(UNICODE_FORMAT);
+        this.keySpec = new DESedeKeySpec(this.arrayBytes);
+        this.secretKeyFactory = SecretKeyFactory.getInstance(this.encryptionScheme);
+        this.cipher = Cipher.getInstance(this.encryptionScheme);
+        this.secretKey = secretKeyFactory.generateSecret(this.keySpec);
     }
 
     public String encrypt(String unencryptedString) {
         String encyptedString;
 
         try {
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            this.cipher.init(Cipher.ENCRYPT_MODE, this.secretKey);
             byte[] text = unencryptedString.getBytes(UNICODE_FORMAT);
-            byte[] encryptedText = cipher.doFinal(text);
+            byte[] encryptedText = this.cipher.doFinal(text);
             encyptedString = new String(Base64.getEncoder().encode(encryptedText));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -45,9 +46,9 @@ public class CipherBase64 {
         String decryptedString;
 
         try {
-            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            this.cipher.init(Cipher.DECRYPT_MODE, secretKey);
             byte[] encyptedText = Base64.getDecoder().decode(encryptedString);
-            byte[] text = cipher.doFinal(encyptedText);
+            byte[] text = this.cipher.doFinal(encyptedText);
             decryptedString = new String(text);
         } catch (Exception e) {
             throw new RuntimeException(e);
